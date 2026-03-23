@@ -1,34 +1,34 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-100">
+  <div class="flex flex-col h-screen bg-gray-50">
 
     <!-- HEADER -->
     <div class="h-14 bg-white border-b flex justify-between px-6 items-center">
-      <h1 class="font-semibold">Task Manager</h1>
+      <h1 class="font-semibold text-lg">Task Manager</h1>
 
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
           {{ user?.name?.[0] || 'U' }}
         </div>
 
-        <span>{{ user?.name || 'User' }}</span>
+        <span class="text-sm text-gray-700">{{ user?.name || 'User' }}</span>
 
-        <button @click="logout" class="text-red-500">Logout</button>
+        <button @click="logout" class="text-sm text-red-500 hover:underline">
+          Logout
+        </button>
       </div>
     </div>
 
     <!-- BODY -->
     <div class="flex flex-1 overflow-hidden">
 
-      <!-- LEFT -->
       <ListsPanel
-        class="w-1/4"
+        class="w-1/4 border-r bg-white"
         :lists="lists"
         :selectedList="selectedList"
         @select="selectList"
         @refresh="fetchLists"
       />
 
-      <!-- CENTER -->
       <TasksPanel
         class="w-2/4"
         :tasks="tasks"
@@ -37,9 +37,8 @@
         @selectTask="selectedTask = $event"
       />
 
-      <!-- RIGHT -->
       <DetailsPanel
-        class="w-1/4"
+        class="w-1/4 border-l bg-white"
         :task="selectedTask"
         @refresh="fetchTasks"
       />
@@ -49,8 +48,6 @@
 </template>
 
 <script setup>
-console.log("HOME LOADED")
-
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -67,13 +64,9 @@ const user = ref({})
 
 const router = useRouter()
 
-onMounted(() => {
-  init()
-})
+onMounted(() => init())
 
 const init = async () => {
-  console.log("INIT RUNNING")
-
   const token = localStorage.getItem('token')
 
   if (!token) {
@@ -83,9 +76,7 @@ const init = async () => {
 
   try {
     const storedUser = localStorage.getItem('user')
-    user.value = storedUser && storedUser !== 'undefined'
-      ? JSON.parse(storedUser)
-      : {}
+    user.value = storedUser ? JSON.parse(storedUser) : {}
   } catch {
     user.value = {}
   }
@@ -94,29 +85,19 @@ const init = async () => {
 }
 
 const fetchLists = async () => {
-  console.log("FETCH LISTS CALLED")
-
   try {
-    const token = localStorage.getItem('token')
-
     const res = await axios.get('http://localhost:3000/task-lists', {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
-
-    console.log("LISTS DATA:", res.data)
 
     lists.value = res.data || []
 
     if (lists.value.length > 0) {
       selectedList.value = lists.value[0]
       await fetchTasks()
-    } else {
-      selectedList.value = null
-      tasks.value = []
     }
 
-  } catch (err) {
-    console.error('LIST ERROR:', err)
+  } catch {
     lists.value = []
   }
 }
@@ -124,23 +105,12 @@ const fetchLists = async () => {
 const fetchTasks = async () => {
   if (!selectedList.value) return
 
-  try {
-    const token = localStorage.getItem('token')
+  const res = await axios.get(
+    `http://localhost:3000/tasks?listId=${selectedList.value.id}`,
+    { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+  )
 
-    const res = await axios.get(
-      `http://localhost:3000/tasks?listId=${selectedList.value.id}`,
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    )
-
-    console.log("TASKS DATA:", res.data)
-
-    tasks.value = res.data || []
-
-  } catch (err) {
-    console.error('TASK ERROR:', err)
-  }
+  tasks.value = res.data || []
 }
 
 const selectList = async (list) => {

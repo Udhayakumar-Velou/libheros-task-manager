@@ -1,33 +1,37 @@
 <template>
-  <div class="bg-gray-100 p-5 h-full flex flex-col">
+  <div class="p-4 h-full flex flex-col bg-white">
 
+    <!-- HEADER -->
     <h2 class="text-lg font-semibold mb-4">Lists</h2>
 
     <!-- LISTS -->
-    <div class="flex flex-col gap-2 flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto space-y-1">
+
+      <!-- EMPTY STATE -->
+      <div v-if="!lists?.length" class="text-gray-400 text-sm px-2">
+        No lists yet
+      </div>
 
       <div
         v-for="list in lists"
         :key="list.id"
         @click="$emit('select', list)"
         :class="[
-          'flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition group',
+          'flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer group transition',
           selectedList?.id === list.id
             ? 'bg-blue-500 text-white'
-            : 'hover:bg-gray-200'
+            : 'hover:bg-gray-100'
         ]"
       >
-
-        <span>{{ list.name }}</span>
+        <span class="truncate">{{ list.name }}</span>
 
         <!-- DELETE -->
         <button
-          @click.stop="remove(list)"
-          class="opacity-0 group-hover:opacity-100"
+          @click.stop="openDelete(list)"
+          class="opacity-0 group-hover:opacity-100 text-sm hover:scale-110 transition"
         >
           🗑
         </button>
-
       </div>
 
     </div>
@@ -36,16 +40,50 @@
     <div class="mt-4 flex gap-2">
       <input
         v-model="name"
+        @keyup.enter="add"
         placeholder="New list"
-        class="flex-1 border px-3 py-2 rounded"
+        class="flex-1 border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <button
         @click="add"
-        class="bg-blue-500 text-white px-4 rounded"
+        class="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition"
       >
-        +
+        Add
       </button>
+    </div>
+
+    <!-- MODAL -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center"
+    >
+      <div class="bg-white p-6 rounded-xl w-80">
+
+        <h3 class="font-semibold mb-2">Delete list?</h3>
+
+        <!-- ✅ REQUIRED MESSAGE -->
+        <p class="text-sm text-gray-500 mb-4">
+          This will delete all tasks inside this list. This action cannot be undone.
+        </p>
+
+        <div class="flex justify-end gap-2">
+          <button
+            @click="showModal=false"
+            class="border px-3 py-1 rounded hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+
+          <button
+            @click="confirmDelete"
+            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -59,28 +97,42 @@ const props = defineProps(['lists', 'selectedList'])
 const emit = defineEmits(['refresh', 'select'])
 
 const name = ref('')
+const showModal = ref(false)
+const selected = ref(null)
+
 const getToken = () => localStorage.getItem('token')
 
 const add = async () => {
-  console.log("TOKEN:", getToken())
-  if (!name.value) return
+  if (!name.value.trim()) return
 
   await axios.post(
     'http://localhost:3000/task-lists',
     { name: name.value },
-    { headers: { Authorization: `Bearer ${getToken()}` } }
+    {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    }
   )
 
   name.value = ''
-  emit('refresh')   // 🔥 important
+  emit('refresh')
 }
 
-const remove = async (list) => {
+const openDelete = (list) => {
+  selected.value = list
+  showModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!selected.value?.id) return
+
   await axios.delete(
-    `http://localhost:3000/task-lists/${list.id}`,
-    { headers: { Authorization: `Bearer ${getToken()}` } }
+    `http://localhost:3000/task-lists/${selected.value.id}`,
+    {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    }
   )
 
-  emit('refresh')   // 🔥 important
+  showModal.value = false
+  emit('refresh')
 }
 </script>
