@@ -5,26 +5,27 @@ import { UsersModule } from './users/users.module';
 import { TaskListsModule } from './task-lists/task-lists.module';
 import { TasksModule } from './tasks/tasks.module';
 import { AuthModule } from './auth/auth.module';
-import { AppController } from './app.controller'; // ✅ ADD THIS
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'mac',
-      password: '',
-      database: 'libheros',
+      url: process.env.DATABASE_URL, // 🔥 FIXED
       autoLoadEntities: true,
       synchronize: true,
-      // dropSchema: true,
+
+      // 🔥 REQUIRED FOR RAILWAY
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
+
     UsersModule,
     TaskListsModule,
     TasksModule,
     AuthModule,
   ],
-  controllers: [AppController], // ✅ ADD THIS
+  controllers: [AppController],
 })
 export class AppModule {}
