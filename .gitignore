@@ -1,0 +1,6 @@
+# Global safety
+.DS_Store
+*.log
+node_modules
+dist
+.env
