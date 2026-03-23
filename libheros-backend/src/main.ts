@@ -5,9 +5,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: '*', // 🔥 allow frontend (we'll restrict later if needed)
   });
 
-  await app.listen(3000);
+  // ✅ FIX FOR RAILWAY
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+
+  console.log(`🚀 Server running on port ${port}`);
 }
 bootstrap();
