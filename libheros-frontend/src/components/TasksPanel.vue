@@ -5,7 +5,7 @@
       {{ selectedList?.name || 'Select a list' }}
     </h2>
 
-    <!-- ❗ EMPTY STATE (IMPORTANT) -->
+    
     <div v-if="!selectedList" class="text-gray-400">
       Select a list to view tasks
     </div>
@@ -71,7 +71,7 @@
 
       </div>
 
-      <!-- COMPLETED (COLLAPSIBLE ✅ REQUIRED) -->
+      
       <div v-if="completedTasks.length" class="mt-4">
 
         <button
@@ -116,7 +116,7 @@ const emit = defineEmits(['refresh', 'selectTask'])
 const shortDesc = ref('')
 const longDesc = ref('')
 const dueDate = ref('')
-const showCompleted = ref(false) // ✅ NEW
+const showCompleted = ref(false)
 
 const getToken = () => localStorage.getItem('token')
 

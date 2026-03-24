@@ -10,7 +10,6 @@ export class TaskList {
   @Column()
   name: string;
 
-  // ✅ FIXED RELATION
   @ManyToOne(() => User, (user) => user.taskLists, {
     onDelete: 'CASCADE',
   })

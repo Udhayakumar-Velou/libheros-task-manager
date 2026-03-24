@@ -11,11 +11,10 @@ import { AppController } from './app.controller';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL, // 🔥 FIXED
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
 
-      // 🔥 REQUIRED FOR RAILWAY
       ssl: {
         rejectUnauthorized: false,
       },

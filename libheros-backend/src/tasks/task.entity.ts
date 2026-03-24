@@ -26,13 +26,11 @@ export class Task {
   @Column({ default: false })
   completed: boolean;
 
-  // ✅ LIST RELATION
   @ManyToOne(() => TaskList, (taskList) => taskList.tasks, {
     onDelete: 'CASCADE',
   })
   taskList: TaskList;
 
-  // ✅ USER RELATION (ADD THIS HERE)
   @ManyToOne(() => User, (user) => user.tasks, {
     onDelete: 'CASCADE',
   })

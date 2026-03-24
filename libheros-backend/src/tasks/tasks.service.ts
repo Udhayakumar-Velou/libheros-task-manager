@@ -18,7 +18,6 @@ export class TasksService {
       dueDate: taskData.dueDate,
       completed: false,
 
-      // 🔥 IMPORTANT RELATIONS
       taskList: { id: taskData.taskListId } as any,
       user: { id: userId } as any,
     });

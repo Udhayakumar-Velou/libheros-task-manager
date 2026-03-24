@@ -62,7 +62,7 @@
 
         <h3 class="font-semibold mb-2">Delete list?</h3>
 
-        <!-- ✅ REQUIRED MESSAGE -->
+        
         <p class="text-sm text-gray-500 mb-4">
           This will delete all tasks inside this list. This action cannot be undone.
         </p>

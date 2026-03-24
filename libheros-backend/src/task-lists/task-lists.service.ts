@@ -10,29 +10,26 @@ export class TaskListsService {
     private taskListRepository: Repository<TaskList>,
   ) {}
 
-  // ✅ CREATE LIST (WITH USER)
   async create(name: string, userId: number) {
     const list = this.taskListRepository.create({
       name,
-      user: { id: userId }, // 🔥 attach user
+      user: { id: userId }, 
     });
 
     return this.taskListRepository.save(list);
   }
 
-  // ✅ GET ONLY USER LISTS
   findAll(userId: number) {
     return this.taskListRepository.find({
       where: { user: { id: userId } },
-      order: { id: 'DESC' }, // 🔥 filter by user
+      order: { id: 'DESC' }, 
     });
   }
 
-  // ✅ DELETE LIST (OPTIONAL: secure)
   async remove(id: number, userId: number) {
     return this.taskListRepository.delete({
       id,
-      user: { id: userId }, // 🔥 only delete own list
+      user: { id: userId },
     });
   }
 }

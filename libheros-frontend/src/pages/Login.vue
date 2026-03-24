@@ -39,7 +39,7 @@ const login = async () => {
     localStorage.setItem('token', res.data.access_token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
 
-    // 🔥 FORCE FULL RELOAD (IMPORTANT)
+ 
     window.location.href = '/home'
 
   } catch (err) {

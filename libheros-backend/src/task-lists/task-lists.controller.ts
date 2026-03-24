@@ -9,7 +9,7 @@ export class TaskListsController {
 
   @Post()
   create(@Body() body: any, @Req() req) {
-    console.log("REQ USER:", req.user); // 🔥 ADD THIS
+    console.log("REQ USER:", req.user);
     return this.taskListsService.create(body.name, req.user.sub);
   }
 
