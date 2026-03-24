@@ -29,10 +29,12 @@ const router = useRouter()
 
 const login = async () => {
   try {
-    const res = await axios.post('http://localhost:3000/auth/login', {
+    const API = import.meta.env.VITE_API_URL;
+
+    const res = await axios.post(`${API}/auth/login`, {
       email: email.value,
       password: password.value,
-    })
+    });
 
     localStorage.setItem('token', res.data.access_token)
     localStorage.setItem('user', JSON.stringify(res.data.user))

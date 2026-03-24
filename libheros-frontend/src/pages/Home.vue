@@ -85,9 +85,12 @@ const init = async () => {
 }
 
 const fetchLists = async () => {
+  const API = import.meta.env.VITE_API_URL;
   try {
-    const res = await axios.get('http://localhost:3000/task-lists', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const res = await axios.get(`${API}/task-lists`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     })
 
     lists.value = res.data || []
@@ -105,9 +108,15 @@ const fetchLists = async () => {
 const fetchTasks = async () => {
   if (!selectedList.value) return
 
+  const API = import.meta.env.VITE_API_URL;
+
   const res = await axios.get(
-    `http://localhost:3000/tasks?listId=${selectedList.value.id}`,
-    { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+    `${API}/tasks?listId=${selectedList.value.id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }
   )
 
   tasks.value = res.data || []

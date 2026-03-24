@@ -106,11 +106,11 @@ const add = async () => {
   if (!name.value.trim()) return
 
   await axios.post(
-    'http://localhost:3000/task-lists',
+    `${import.meta.env.VITE_API_URL}/task-lists`,
     { name: name.value },
     {
       headers: { Authorization: `Bearer ${getToken()}` }
-    }
+  }
   )
 
   name.value = ''
@@ -126,7 +126,7 @@ const confirmDelete = async () => {
   if (!selected.value?.id) return
 
   await axios.delete(
-    `http://localhost:3000/task-lists/${selected.value.id}`,
+    `${import.meta.env.VITE_API_URL}/task-lists/${selected.value.id}`,
     {
       headers: { Authorization: `Bearer ${getToken()}` }
     }

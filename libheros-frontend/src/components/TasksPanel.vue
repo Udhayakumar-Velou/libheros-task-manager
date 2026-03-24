@@ -135,18 +135,20 @@ const completedTasks = computed(() =>
 const addTask = async () => {
   if (!shortDesc.value.trim()) return
 
-  await axios.post(
-    'http://localhost:3000/tasks',
-    {
-      shortDescription: shortDesc.value,
-      longDescription: longDesc.value,
-      dueDate: dueDate.value,
-      taskListId: props.selectedList.id
-    },
-    {
-      headers: { Authorization: `Bearer ${getToken()}` }
+ await axios.post(
+  `${import.meta.env.VITE_API_URL}/tasks`,
+  {
+    shortDescription: shortDesc.value,
+    longDescription: longDesc.value,
+    dueDate: dueDate.value,
+    taskListId: props.selectedList.id
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
     }
-  )
+  }
+)
 
   shortDesc.value = ''
   longDesc.value = ''
@@ -157,10 +159,12 @@ const addTask = async () => {
 
 const toggle = async (task) => {
   await axios.patch(
-    `http://localhost:3000/tasks/${task.id}`,
+  `${import.meta.env.VITE_API_URL}/tasks/${task.id}`,
     { completed: !task.completed },
     {
-      headers: { Authorization: `Bearer ${getToken()}` }
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
     }
   )
 

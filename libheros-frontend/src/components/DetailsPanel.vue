@@ -104,7 +104,7 @@ const confirmDelete = async () => {
   if (!props.task?.id) return
 
   await axios.delete(
-    `http://localhost:3000/tasks/${props.task.id}`,
+    `${import.meta.env.VITE_API_URL}/tasks/${props.task.id}`,
     {
       headers: { Authorization: `Bearer ${getToken()}` }
     }

@@ -33,7 +33,9 @@ const register = async () => {
   const [firstName, ...rest] = name.value.split(' ')
   const lastName = rest.join(' ') || '-'
 
-  await axios.post('http://localhost:3000/auth/register', {
+  const API = import.meta.env.VITE_API_URL;
+
+  await axios.post(`${API}/auth/register`, {
     firstName,
     lastName,
     email: email.value,
